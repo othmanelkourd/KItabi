@@ -18,6 +18,7 @@ ktor-version = "2.3.12"
 koin-core-version = "3.5.6"
 koin-compose-version = "1.1.5"
 koin-android-version = "3.5.6"
+compose-tooling-version = "1.10.1"
 
 [libraries]
 kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
@@ -36,6 +37,7 @@ kator = { module = "io.ktor:ktor-client-okhttp", version.ref = "ktor-version" }
 koin-core = { module = "io.insert-koin:koin-core", version.ref = "koin-core-version" }
 koin-compose = { module = "io.insert-koin:koin-compose", version.ref = "koin-compose-version" }
 koin-android = { module = "io.insert-koin:koin-android", version.ref = "koin-android-version" }
+compose-tooling = { module = "org.jetbrains.compose.ui:ui-tooling-preview", version.ref = "compose-tooling-version" }
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

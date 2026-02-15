@@ -1,31 +1,61 @@
 package com.smile.kitabi
 
-import androidx.compose.animation.AnimatedVisibility
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.safeContentPadding
-import androidx.compose.material3.Button
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import com.smile.kitabi.data.repository.FakeBooksRepository
-import com.smile.kitabi.domain.usecase.GetRentedBooksUseCase
+import com.smile.kitabi.ui.addbook.AddBookScreen
+import com.smile.kitabi.ui.addbook.AddBookViewModel
 import com.smile.kitabi.ui.home.HomeScreen
 import com.smile.kitabi.ui.home.HomeViewModel
-import org.jetbrains.compose.resources.painterResource
-import org.jetbrains.compose.ui.tooling.preview.Preview
+import org.koin.compose.koinInject
 
-import kitabi.composeapp.generated.resources.Res
-import kitabi.composeapp.generated.resources.compose_multiplatform
+enum class Screen {
+    Home,
+    AddBook,
+    ScanIsbn
+}
 
 @Composable
-fun App(viewModel: HomeViewModel) {
+fun App(
+    viewModel: HomeViewModel = koinInject()
+) {
+    var currentScreen by remember { mutableStateOf(Screen.Home) }
+
     MaterialTheme {
-        HomeScreen(viewModel)
+        when (currentScreen) {
+            Screen.Home -> {
+                HomeScreen(
+                    viewModel = viewModel,
+                    onScanIsbnClick = { currentScreen = Screen.ScanIsbn },
+                    onAddManuallyClick = { currentScreen = Screen.AddBook }
+                )
+            }
+
+            Screen.AddBook -> {
+                val addBookViewModel: AddBookViewModel = koinInject()
+                AddBookScreen(
+                    viewModel = addBookViewModel,
+                    onNavigateBack = { currentScreen = Screen.Home }
+                )
+            }
+
+            Screen.ScanIsbn -> {
+                // TODO: Implement ISBN scanner screen
+                // For now, just go back to home
+                Text(
+                    "ISBN Scanner - Coming Soon",
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .clickable { currentScreen = Screen.Home }
+                )
+            }
+        }
     }
 }
