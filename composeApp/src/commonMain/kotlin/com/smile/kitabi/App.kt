@@ -27,12 +27,14 @@ fun App(
     viewModel: HomeViewModel = koinInject()
 ) {
     var currentScreen by remember { mutableStateOf(Screen.Home) }
+    var refreshTrigger by remember { mutableStateOf(0) }
 
     MaterialTheme {
         when (currentScreen) {
             Screen.Home -> {
                 HomeScreen(
                     viewModel = viewModel,
+                    refreshTrigger = refreshTrigger,
                     onScanIsbnClick = { currentScreen = Screen.ScanIsbn },
                     onAddManuallyClick = { currentScreen = Screen.AddBook }
                 )
@@ -42,7 +44,10 @@ fun App(
                 val addBookViewModel: AddBookViewModel = koinInject()
                 AddBookScreen(
                     viewModel = addBookViewModel,
-                    onNavigateBack = { currentScreen = Screen.Home }
+                    onNavigateBack = {
+                        refreshTrigger++
+                        currentScreen = Screen.Home
+                    }
                 )
             }
 

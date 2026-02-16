@@ -13,14 +13,14 @@ class SaveBookUseCase(
     suspend operator fun invoke(
         title: String,
         description: String,
-        imageUrl: String,
+        imageBytes: ByteArray,
         rentalEndDate: LocalDate
     ): Result<Unit> = runCatching {
         val book = Book(
             id = Uuid.random().toString(),
             title = title,
             description = description,
-            imageUrl = imageUrl,
+            imageBytes = imageBytes,
             rentalEndDate = rentalEndDate
         )
         repository.saveBook(book)

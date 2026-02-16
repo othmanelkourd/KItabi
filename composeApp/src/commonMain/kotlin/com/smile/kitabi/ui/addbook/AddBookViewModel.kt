@@ -1,5 +1,6 @@
 package com.smile.kitabi.ui.addbook
 
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.smile.kitabi.domain.usecase.SaveBookUseCase
@@ -32,12 +33,20 @@ class AddBookViewModel(
         _state.update { it.copy(description = description) }
     }
 
-    fun onImageUrlChange(imageUrl: String) {
-        _state.update { it.copy(imageUrl = imageUrl) }
+    fun onImagePicked(imageBitmap: ImageBitmap, imageBytes: ByteArray) {
+        _state.update { it.copy(imageBitmap = imageBitmap, imageBytes = imageBytes) }
     }
 
-    fun onRentalEndDateChange(date: String) {
-        _state.update { it.copy(rentalEndDate = date, dateError = null) }
+    fun onDateSelected(date: LocalDate) {
+        _state.update { it.copy(rentalEndDate = date, dateError = null, showDatePicker = false) }
+    }
+
+    fun onShowDatePicker() {
+        _state.update { it.copy(showDatePicker = true) }
+    }
+
+    fun onDismissDatePicker() {
+        _state.update { it.copy(showDatePicker = false) }
     }
 
     fun onSaveClick() {
@@ -50,12 +59,9 @@ class AddBookViewModel(
             hasError = true
         }
 
-        val parsedDate = try {
-            LocalDate.parse(currentState.rentalEndDate)
-        } catch (e: Exception) {
-            _state.update { it.copy(dateError = "Invalid date format (YYYY-MM-DD)") }
+        if (currentState.rentalEndDate == null) {
+            _state.update { it.copy(dateError = "Rental end date is required") }
             hasError = true
-            null
         }
 
         if (hasError) return
@@ -66,11 +72,10 @@ class AddBookViewModel(
             saveBookUseCase(
                 title = currentState.title,
                 description = currentState.description,
-                imageUrl = currentState.imageUrl,
-                rentalEndDate = parsedDate!!
+                imageBytes = currentState.imageBytes,
+                rentalEndDate = currentState.rentalEndDate!!
             ).onSuccess {
                 _state.update { it.copy(isLoading = false, isSaved = true) }
-                _events.tryEmit(AddBookUiEvent.ShowSnackbar("Book saved successfully!"))
                 _events.tryEmit(AddBookUiEvent.NavigateBack)
             }.onFailure { e ->
                 val msg = e.message ?: "Failed to save book"

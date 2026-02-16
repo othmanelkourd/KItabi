@@ -15,14 +15,14 @@ class FakeBooksRepository : BookRepository {
                     id = "1",
                     title = "Clean Architecture",
                     description = "A guide to software structure and design",
-                    imageUrl = "",
+                    imageBytes = byteArrayOf(),
                     rentalEndDate = LocalDate(2026, 1, 25)
                 ),
                 Book(
                     id = "2",
                     title = "Kotlin in Action",
                     description = "Deep dive into Kotlin language",
-                    imageUrl = "",
+                    imageBytes = byteArrayOf(),
                     rentalEndDate = LocalDate(2026, 1, 20)
                 )
             )

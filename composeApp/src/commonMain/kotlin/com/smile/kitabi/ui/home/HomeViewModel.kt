@@ -22,6 +22,10 @@ class HomeViewModel(
         loadBooks()
     }
 
+    fun refreshBooks() {
+        loadBooks()
+    }
+
     private fun loadBooks() {
         viewModelScope.launch {
             _state.update { it.copy(isLoading = true, errorMessage = null) }
@@ -35,9 +39,5 @@ class HomeViewModel(
                     _events.tryEmit(HomeUiEvent.ShowSnackbar(msg))
                 }
         }
-    }
-
-    fun onAddClicked() {
-        // navigation handled by UI callback in KMP usually
     }
 }

@@ -40,6 +40,7 @@ import androidx.compose.ui.tooling.preview.Preview
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel,
+    refreshTrigger: Int = 0,
     onScanIsbnClick: () -> Unit = {},
     onAddManuallyClick: () -> Unit = {}
 ) {
@@ -49,6 +50,11 @@ fun HomeScreen(
     // BottomSheet state (KMP-friendly)
     var showSheet by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
+
+    // Refresh books when returning to this screen or when refreshTrigger changes
+    LaunchedEffect(refreshTrigger) {
+        viewModel.refreshBooks()
+    }
 
     LaunchedEffect(viewModel) {
         viewModel.events.collectLatest { event ->

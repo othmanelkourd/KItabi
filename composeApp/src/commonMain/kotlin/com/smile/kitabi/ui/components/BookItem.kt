@@ -1,5 +1,8 @@
 package com.smile.kitabi.ui.components
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -9,20 +12,23 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Book
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.smile.kitabi.domain.model.Book
 import com.smile.kitabi.domain.model.remainingDays
-import io.kamel.image.KamelImage
-import io.kamel.image.asyncPainterResource
 
 @Composable
 fun BookItem(book: Book) {
@@ -34,13 +40,13 @@ fun BookItem(book: Book) {
     ) {
         Row(modifier = Modifier.padding(12.dp)) {
 
-            KamelImage(
-                resource = asyncPainterResource(book.imageUrl),
-                contentDescription = book.title,
+            // Display image from ByteArray
+            BookCoverImage(
+                imageBytes = book.imageBytes,
+                title = book.title,
                 modifier = Modifier
                     .size(80.dp)
-                    .clip(RoundedCornerShape(8.dp)),
-                contentScale = ContentScale.Crop
+                    .clip(RoundedCornerShape(8.dp))
             )
 
             Spacer(Modifier.width(12.dp))
@@ -68,3 +74,40 @@ fun BookItem(book: Book) {
         }
     }
 }
+
+@Composable
+private fun BookCoverImage(
+    imageBytes: ByteArray,
+    title: String,
+    modifier: Modifier = Modifier
+) {
+    val imageBitmap = rememberImageBitmapFromBytes(imageBytes)
+
+    if (imageBitmap != null) {
+        Image(
+            bitmap = imageBitmap,
+            contentDescription = title,
+            modifier = modifier,
+            contentScale = ContentScale.Crop
+        )
+    } else {
+        // Fallback placeholder
+        Box(
+            modifier = modifier.background(MaterialTheme.colorScheme.surfaceVariant),
+            contentAlignment = Alignment.Center
+        ) {
+            Icon(
+                imageVector = Icons.Default.Book,
+                contentDescription = null,
+                modifier = Modifier.size(40.dp),
+                tint = MaterialTheme.colorScheme.onSurfaceVariant
+            )
+        }
+    }
+}
+
+/**
+ * Converts ByteArray to ImageBitmap. Platform-specific implementation.
+ */
+@Composable
+expect fun rememberImageBitmapFromBytes(imageBytes: ByteArray): ImageBitmap?
