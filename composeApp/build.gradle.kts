@@ -6,6 +6,7 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
+    alias(libs.plugins.kotlinSerialization)
 }
 
 kotlin {
@@ -27,6 +28,13 @@ kotlin {
             linkerOpts.add("Vision")
             linkerOpts.add("-framework")
             linkerOpts.add("AVFoundation")
+            // iOS frameworks for Google Books API
+            linkerOpts.add("-framework")
+            linkerOpts.add("Foundation")
+            linkerOpts.add("-framework")
+            linkerOpts.add("CFNetwork")
+            linkerOpts.add("-framework")
+            linkerOpts.add("Security")
         }
     }
     
@@ -44,8 +52,8 @@ kotlin {
             implementation(libs.mlkit.barcode)
         }
         iosMain.dependencies {
-            // iOS barcode scanning uses native Vision and AVFoundation frameworks
-            // via Kotlin/Native interoperability - no additional Gradle deps needed
+            // iOS HTTP client engine for Google Books API
+            implementation(libs.ktor.client.darwin)
         }
         commonMain.dependencies {
             implementation(compose.runtime)
@@ -61,6 +69,11 @@ kotlin {
             implementation(libs.kamel)
             implementation(libs.koin.core)
             implementation(libs.koin.compose)
+            // Google Books API integration
+            implementation(libs.kotlinx.serialization.json)
+            implementation(libs.kotlinx.coroutines.core)
+            implementation(libs.ktor.client.content.negotiation)
+            implementation(libs.ktor.serialization.kotlinx.json)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test)
