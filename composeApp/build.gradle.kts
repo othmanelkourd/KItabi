@@ -22,6 +22,11 @@ kotlin {
         iosTarget.binaries.framework {
             baseName = "ComposeApp"
             isStatic = true
+            // iOS frameworks for barcode scanning
+            linkerOpts.add("-framework")
+            linkerOpts.add("Vision")
+            linkerOpts.add("-framework")
+            linkerOpts.add("AVFoundation")
         }
     }
     
@@ -31,6 +36,16 @@ kotlin {
             implementation(libs.androidx.activity.compose)
             implementation(libs.kator)
             implementation(libs.koin.android)
+            // Camera and Barcode Scanning
+            implementation(libs.camerax.core)
+            implementation(libs.camerax.camera2)
+            implementation(libs.camerax.lifecycle)
+            implementation(libs.camerax.view)
+            implementation(libs.mlkit.barcode)
+        }
+        iosMain.dependencies {
+            // iOS barcode scanning uses native Vision and AVFoundation frameworks
+            // via Kotlin/Native interoperability - no additional Gradle deps needed
         }
         commonMain.dependencies {
             implementation(compose.runtime)
