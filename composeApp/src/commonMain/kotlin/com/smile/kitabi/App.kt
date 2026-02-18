@@ -1,19 +1,17 @@
 package com.smile.kitabi
 
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Modifier
 import com.smile.kitabi.ui.addbook.AddBookScreen
 import com.smile.kitabi.ui.addbook.AddBookViewModel
 import com.smile.kitabi.ui.home.HomeScreen
 import com.smile.kitabi.ui.home.HomeViewModel
+import com.smile.kitabi.ui.scanisbn.ScanIsbnScreen
+import com.smile.kitabi.ui.scanisbn.ScanIsbnViewModel
 import org.koin.compose.koinInject
 
 enum class Screen {
@@ -52,13 +50,16 @@ fun App(
             }
 
             Screen.ScanIsbn -> {
-                // TODO: Implement ISBN scanner screen
-                // For now, just go back to home
-                Text(
-                    "ISBN Scanner - Coming Soon",
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .clickable { currentScreen = Screen.Home }
+                val scanIsbnViewModel: ScanIsbnViewModel = koinInject()
+                ScanIsbnScreen(
+                    viewModel = scanIsbnViewModel,
+                    onNavigateBack = {
+                        currentScreen = Screen.Home
+                    },
+                    onIsbnScanned = { isbn ->
+                        // TODO: Use the scanned ISBN to fetch book info
+                        println("Scanned ISBN: $isbn")
+                    }
                 )
             }
         }

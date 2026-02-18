@@ -6,6 +6,7 @@ import com.smile.kitabi.domain.usecase.GetRentedBooksUseCase
 import com.smile.kitabi.domain.usecase.SaveBookUseCase
 import com.smile.kitabi.ui.addbook.AddBookViewModel
 import com.smile.kitabi.ui.home.HomeViewModel
+import com.smile.kitabi.ui.scanisbn.ScanIsbnViewModel
 import org.koin.core.KoinApplication
 import org.koin.core.context.startKoin
 import org.koin.dsl.KoinAppDeclaration
@@ -17,6 +18,7 @@ val appModule = module {
     single { SaveBookUseCase(get()) }
     factory { HomeViewModel(get()) }
     factory { AddBookViewModel(get()) }
+    factory { ScanIsbnViewModel() }
 }
 
 // Optional platform module (can be empty for now)
