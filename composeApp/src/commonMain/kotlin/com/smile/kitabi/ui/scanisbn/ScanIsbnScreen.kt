@@ -3,6 +3,7 @@ package com.smile.kitabi.ui.scanisbn
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -11,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Button
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -41,7 +43,7 @@ expect fun CameraPreview(
 fun ScanIsbnScreen(
     viewModel: ScanIsbnViewModel,
     onNavigateBack: () -> Unit,
-    onIsbnScanned: (String) -> Unit
+    onIsbnScanned: (com.smile.kitabi.domain.model.GoogleBookInfo) -> Unit
 ) {
     val state by viewModel.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -60,10 +62,9 @@ fun ScanIsbnScreen(
         }
     }
 
-    LaunchedEffect(state.scannedIsbn) {
-        if (state.scannedIsbn.isNotEmpty()) {
-            onIsbnScanned(state.scannedIsbn)
-            onNavigateBack()
+    LaunchedEffect(state.bookInfo) {
+        if (state.bookInfo != null) {
+            onIsbnScanned(state.bookInfo!!)
         }
     }
 
@@ -85,38 +86,53 @@ fun ScanIsbnScreen(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            // Camera preview
-            CameraPreview(
-                modifier = Modifier.fillMaxSize(),
-                onBarcodeDetected = { barcode ->
-                    viewModel.onBarcodeDetected(barcode)
-                },
-                onError = { error ->
-                    viewModel.onScanningError(error)
-                }
-            )
-
-            // Instructions overlay at the bottom
-            Column(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.9f))
-                    .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(
-                    "Position the barcode in the frame",
-                    style = MaterialTheme.typography.bodyMedium
+            // Show camera while not loading and no book info
+            if (!state.isLoadingBookInfo && state.bookInfo == null) {
+                CameraPreview(
+                    modifier = Modifier.fillMaxSize(),
+                    onBarcodeDetected = { barcode ->
+                        viewModel.onBarcodeDetected(barcode)
+                    },
+                    onError = { error ->
+                        viewModel.onScanningError(error)
+                    }
                 )
-                Spacer(modifier = Modifier.height(8.dp))
-                Button(onClick = onNavigateBack) {
-                    Text("Cancel")
+            }
+
+            // Show loading spinner while fetching book info
+            if (state.isLoadingBookInfo) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.9f)),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = androidx.compose.foundation.layout.Arrangement.Center
+                ) {
+                    CircularProgressIndicator()
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Text("Fetching book information...")
+                }
+            }
+
+            // Instructions overlay at the bottom (only show when scanning)
+            if (!state.isLoadingBookInfo && state.bookInfo == null) {
+                Column(
+                    modifier = Modifier
+                        .align(Alignment.BottomCenter)
+                        .fillMaxWidth()
+                        .background(MaterialTheme.colorScheme.surface.copy(alpha = 0.9f))
+                        .padding(16.dp),
+                    horizontalAlignment = Alignment.CenterHorizontally
+                ) {
+                    Text(
+                        "Position the barcode in the frame",
+                        style = MaterialTheme.typography.bodyMedium
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Button(onClick = onNavigateBack) {
+                        Text("Cancel")
+                    }
                 }
             }
         }
-    }
-}
-
-
-
+    }}

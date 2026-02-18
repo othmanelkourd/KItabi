@@ -3,6 +3,7 @@ package com.smile.kitabi.ui.addbook
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.smile.kitabi.domain.model.GoogleBookInfo
 import com.smile.kitabi.domain.usecase.SaveBookUseCase
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -24,6 +25,15 @@ class AddBookViewModel(
 
     private val _events = MutableSharedFlow<AddBookUiEvent>(extraBufferCapacity = 1)
     val events: SharedFlow<AddBookUiEvent> = _events.asSharedFlow()
+
+    fun prefillFromGoogleBook(bookInfo: GoogleBookInfo) {
+        _state.update {
+            it.copy(
+                title = bookInfo.title,
+                description = bookInfo.description
+            )
+        }
+    }
 
     fun onTitleChange(title: String) {
         _state.update { it.copy(title = title, titleError = null) }
