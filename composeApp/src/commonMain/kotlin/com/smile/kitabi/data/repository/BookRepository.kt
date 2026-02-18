@@ -9,24 +9,25 @@ class FakeBooksRepository : BookRepository {
     private val books = mutableListOf<Book>()
 
     init {
-        books.addAll(
-            listOf(
-                Book(
-                    id = "1",
-                    title = "Clean Architecture",
-                    description = "A guide to software structure and design",
-                    imageBytes = byteArrayOf(),
-                    rentalEndDate = LocalDate(2026, 1, 25)
-                ),
-                Book(
-                    id = "2",
-                    title = "Kotlin in Action",
-                    description = "Deep dive into Kotlin language",
-                    imageBytes = byteArrayOf(),
-                    rentalEndDate = LocalDate(2026, 1, 20)
-                )
-            )
-        )
+        // Start with empty books list to show empty state
+        // books.addAll(
+        //     listOf(
+        //         Book(
+        //             id = "1",
+        //             title = "Clean Architecture",
+        //             description = "A guide to software structure and design",
+        //             imageBytes = byteArrayOf(),
+        //             rentalEndDate = LocalDate(2026, 1, 25)
+        //         ),
+        //         Book(
+        //             id = "2",
+        //             title = "Kotlin in Action",
+        //             description = "Deep dive into Kotlin language",
+        //             imageBytes = byteArrayOf(),
+        //             rentalEndDate = LocalDate(2026, 1, 20)
+        //         )
+        //     )
+        // )
     }
 
     override suspend fun getRentedBooks(): List<Book> {
