@@ -1,6 +1,9 @@
 package com.smile.kitabi.domain.model
 
 import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.todayIn
+import kotlin.time.Clock
 
 data class Book(
     val id: String,
@@ -38,6 +41,7 @@ data class Book(
 }
 
 fun Book.remainingDays(): Int {
-
-    return 10
+    val today = Clock.System.todayIn(TimeZone.currentSystemDefault())
+    val daysRemaining = (rentalEndDate.toEpochDays() - today.toEpochDays()).toInt()
+    return maxOf(daysRemaining, 0) // Return 0 if date has passed
 }
