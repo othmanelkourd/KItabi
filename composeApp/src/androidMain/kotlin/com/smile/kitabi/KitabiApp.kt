@@ -2,6 +2,7 @@ package com.smile.kitabi
 
 import android.app.Application
 import com.smile.kitabi.di.appModule
+import com.smile.kitabi.di.androidModule
 import org.koin.android.ext.koin.androidContext
 import org.koin.android.ext.koin.androidLogger
 import org.koin.core.context.startKoin
@@ -13,7 +14,10 @@ class KitabiApp : Application() {
         startKoin {
             androidLogger()
             androidContext(this@KitabiApp)
-            modules(appModule)
+            modules(
+                appModule,
+                androidModule(this@KitabiApp)
+            )
         }
     }
 }

@@ -28,7 +28,6 @@ import androidx.camera.view.PreviewView
 import androidx.lifecycle.LifecycleOwner
 import com.google.mlkit.vision.barcode.BarcodeScanning
 import com.google.mlkit.vision.common.InputImage
-import kotlin.OptIn
 import java.util.concurrent.Executors
 
 @Composable
@@ -120,7 +119,6 @@ actual fun CameraPreview(
     }
 }
 
-@androidx.annotation.OptIn(ExperimentalGetImage::class)
 @OptIn(ExperimentalGetImage::class)
 private fun processImageForBarcode(
     imageProxy: ImageProxy,

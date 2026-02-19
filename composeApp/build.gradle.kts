@@ -1,3 +1,4 @@
+import org.gradle.kotlin.dsl.invoke
 import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
 
@@ -7,6 +8,8 @@ plugins {
     alias(libs.plugins.composeMultiplatform)
     alias(libs.plugins.composeCompiler)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.ksp)
+
 }
 
 kotlin {
@@ -50,6 +53,11 @@ kotlin {
             implementation(libs.camerax.lifecycle)
             implementation(libs.camerax.view)
             implementation(libs.mlkit.barcode)
+            // Room Database
+            implementation(libs.room.runtime)
+            implementation(libs.room.ktx)
+            // Guava for ListenableFuture support
+            implementation(libs.guava)
         }
         iosMain.dependencies {
             // iOS HTTP client engine for Google Books API
@@ -110,5 +118,7 @@ android {
 
 dependencies {
     debugImplementation(compose.uiTooling)
+    // KSP for Room annotation processing on Android
+    ksp("androidx.room:room-compiler:${libs.versions.room.version.get()}")
 }
 

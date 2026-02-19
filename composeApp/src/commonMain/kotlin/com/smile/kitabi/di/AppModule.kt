@@ -30,7 +30,7 @@ val appModule = module {
         }
     }
 
-    // Repositories
+    // Repositories - Default to Fake, will be overridden on Android
     single<BookRepository> { FakeBooksRepository() }
 
     // Use Cases
@@ -44,7 +44,7 @@ val appModule = module {
     factory { ScanIsbnViewModel(get()) }
 }
 
-// Optional platform module (can be empty for now)
+// Platform module - can be extended in platform-specific code
 val platformModule = module { }
 
 fun initKoin(appDeclaration: KoinAppDeclaration = {}): KoinApplication =
