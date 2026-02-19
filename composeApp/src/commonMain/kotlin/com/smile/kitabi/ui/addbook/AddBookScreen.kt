@@ -48,6 +48,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
+import io.kamel.image.KamelImage
+import io.kamel.image.asyncPainterResource
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.flow.collectLatest
@@ -132,6 +134,7 @@ fun AddBookScreen(
             // Image picker component with edit button
             BookImagePicker(
                 imageBitmap = state.imageBitmap,
+                imageUrl = state.imageUrl,
                 onPickImage = {
                     imagePicker.pickImage { bitmap, bytes ->
                         viewModel.onImagePicked(bitmap, bytes)
@@ -227,6 +230,7 @@ fun AddBookScreen(
 @Composable
 private fun BookImagePicker(
     imageBitmap: ImageBitmap?,
+    imageUrl: String = "",
     onPickImage: () -> Unit
 ) {
     Box(
@@ -237,15 +241,21 @@ private fun BookImagePicker(
         contentAlignment = Alignment.Center
     ) {
         if (imageBitmap != null) {
-            // Display selected image
+            // Display selected image from local bytes (priority 1)
             Image(
                 bitmap = imageBitmap,
                 contentDescription = "Book cover image",
                 modifier = Modifier.fillMaxSize(),
                 contentScale = ContentScale.Crop
             )
+        } else if (imageUrl.isNotEmpty()) {
+            // Display image from Google Books API URL (priority 2)
+            AddBookScreenRemoteImage(
+                url = imageUrl,
+                modifier = Modifier.fillMaxSize()
+            )
         } else {
-            // Placeholder with add photo icon
+            // Placeholder with add photo icon (priority 3)
             Column(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
@@ -284,4 +294,31 @@ private fun BookImagePicker(
             )
         }
     }
+}
+
+@Composable
+private fun AddBookScreenRemoteImage(
+    url: String,
+    modifier: Modifier = Modifier
+) {
+    KamelImage(
+        asyncPainterResource(url),
+        contentDescription = "Book cover from URL",
+        modifier = modifier,
+        contentScale = ContentScale.Crop,
+        onFailure = {
+            // Show placeholder on load failure
+            Box(
+                modifier = modifier.background(MaterialTheme.colorScheme.surfaceVariant),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.AddAPhoto,
+                    contentDescription = null,
+                    modifier = Modifier.size(48.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    )
 }

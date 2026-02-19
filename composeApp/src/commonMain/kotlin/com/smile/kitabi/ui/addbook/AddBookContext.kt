@@ -8,6 +8,7 @@ data class AddBookState(
     val description: String = "",
     val imageBitmap: ImageBitmap? = null,
     val imageBytes: ByteArray = byteArrayOf(),
+    val imageUrl: String = "", // URL from Google Books API
     val rentalEndDate: LocalDate? = null,
     val isLoading: Boolean = false,
     val titleError: String? = null,
@@ -25,6 +26,7 @@ data class AddBookState(
         if (description != other.description) return false
         if (imageBitmap != other.imageBitmap) return false
         if (!imageBytes.contentEquals(other.imageBytes)) return false
+        if (imageUrl != other.imageUrl) return false
         if (rentalEndDate != other.rentalEndDate) return false
         if (isLoading != other.isLoading) return false
         if (titleError != other.titleError) return false
@@ -40,6 +42,7 @@ data class AddBookState(
         result = 31 * result + description.hashCode()
         result = 31 * result + (imageBitmap?.hashCode() ?: 0)
         result = 31 * result + imageBytes.contentHashCode()
+        result = 31 * result + imageUrl.hashCode()
         result = 31 * result + (rentalEndDate?.hashCode() ?: 0)
         result = 31 * result + isLoading.hashCode()
         result = 31 * result + (titleError?.hashCode() ?: 0)

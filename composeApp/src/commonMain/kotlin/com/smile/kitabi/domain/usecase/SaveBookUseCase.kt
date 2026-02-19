@@ -14,6 +14,7 @@ class SaveBookUseCase(
         title: String,
         description: String,
         imageBytes: ByteArray,
+        imageUrl: String = "",
         rentalEndDate: LocalDate
     ): Result<Unit> = runCatching {
         val book = Book(
@@ -21,6 +22,7 @@ class SaveBookUseCase(
             title = title,
             description = description,
             imageBytes = imageBytes,
+            imageUrl = imageUrl,
             rentalEndDate = rentalEndDate
         )
         repository.saveBook(book)

@@ -28,6 +28,8 @@ import androidx.compose.ui.graphics.ImageBitmap
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.unit.dp
 import com.smile.kitabi.domain.model.Book
+import io.kamel.image.KamelImage
+import io.kamel.image.asyncPainterResource
 import com.smile.kitabi.domain.model.remainingDays
 
 @Composable
@@ -40,9 +42,10 @@ fun BookItem(book: Book) {
     ) {
         Row(modifier = Modifier.padding(12.dp)) {
 
-            // Display image from ByteArray
+            // Display image from ByteArray or URL
             BookCoverImage(
                 imageBytes = book.imageBytes,
+                imageUrl = book.imageUrl,
                 title = book.title,
                 modifier = Modifier
                     .size(80.dp)
@@ -78,20 +81,30 @@ fun BookItem(book: Book) {
 @Composable
 private fun BookCoverImage(
     imageBytes: ByteArray,
+    imageUrl: String,
     title: String,
     modifier: Modifier = Modifier
 ) {
+    // Priority: imageBytes > imageUrl > placeholder
     val imageBitmap = rememberImageBitmapFromBytes(imageBytes)
 
     if (imageBitmap != null) {
+        // Use local image bytes if available
         Image(
             bitmap = imageBitmap,
             contentDescription = title,
             modifier = modifier,
             contentScale = ContentScale.Crop
         )
+    } else if (imageUrl.isNotEmpty()) {
+        // Use image URL from Google Books API if no local bytes
+        RemoteImage(
+            url = imageUrl,
+            contentDescription = title,
+            modifier = modifier
+        )
     } else {
-        // Fallback placeholder
+        // Fallback placeholder when no image is available
         Box(
             modifier = modifier.background(MaterialTheme.colorScheme.surfaceVariant),
             contentAlignment = Alignment.Center
@@ -104,6 +117,34 @@ private fun BookCoverImage(
             )
         }
     }
+}
+
+@Composable
+private fun RemoteImage(
+    url: String,
+    contentDescription: String,
+    modifier: Modifier = Modifier
+) {
+    KamelImage(
+        asyncPainterResource(url),
+        contentDescription = contentDescription,
+        modifier = modifier,
+        contentScale = ContentScale.Crop,
+        onFailure = {
+            // Show placeholder on load failure
+            Box(
+                modifier = modifier.background(MaterialTheme.colorScheme.surfaceVariant),
+                contentAlignment = Alignment.Center
+            ) {
+                Icon(
+                    imageVector = Icons.Default.Book,
+                    contentDescription = null,
+                    modifier = Modifier.size(40.dp),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+        }
+    )
 }
 
 /**

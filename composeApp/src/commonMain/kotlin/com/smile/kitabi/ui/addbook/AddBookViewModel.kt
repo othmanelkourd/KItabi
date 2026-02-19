@@ -30,7 +30,8 @@ class AddBookViewModel(
         _state.update {
             it.copy(
                 title = bookInfo.title,
-                description = bookInfo.description
+                description = bookInfo.description,
+                imageUrl = bookInfo.thumbnailUrl
             )
         }
     }
@@ -83,6 +84,7 @@ class AddBookViewModel(
                 title = currentState.title,
                 description = currentState.description,
                 imageBytes = currentState.imageBytes,
+                imageUrl = currentState.imageUrl,
                 rentalEndDate = currentState.rentalEndDate!!
             ).onSuccess {
                 _state.update { it.copy(isLoading = false, isSaved = true) }

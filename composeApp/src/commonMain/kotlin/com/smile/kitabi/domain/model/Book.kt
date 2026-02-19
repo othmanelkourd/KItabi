@@ -7,6 +7,7 @@ data class Book(
     val title: String,
     val description: String,
     val imageBytes: ByteArray,
+    val imageUrl: String = "", // URL from Google Books API
     val rentalEndDate: LocalDate
 ) {
     override fun equals(other: Any?): Boolean {
@@ -19,6 +20,7 @@ data class Book(
         if (title != other.title) return false
         if (description != other.description) return false
         if (!imageBytes.contentEquals(other.imageBytes)) return false
+        if (imageUrl != other.imageUrl) return false
         if (rentalEndDate != other.rentalEndDate) return false
 
         return true
@@ -29,6 +31,7 @@ data class Book(
         result = 31 * result + title.hashCode()
         result = 31 * result + description.hashCode()
         result = 31 * result + imageBytes.contentHashCode()
+        result = 31 * result + imageUrl.hashCode()
         result = 31 * result + rentalEndDate.hashCode()
         return result
     }

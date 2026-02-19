@@ -14,6 +14,7 @@ data class BookEntity(
     val title: String,
     val description: String = "",
     val imageBytes: ByteArray = byteArrayOf(),
+    val imageUrl: String = "", // URL from Google Books API
     val rentalEndDate: LocalDate,
     val publisher: String = "",
     val authors: String = "", // Stored as comma-separated string
@@ -32,6 +33,7 @@ data class BookEntity(
         if (title != other.title) return false
         if (description != other.description) return false
         if (!imageBytes.contentEquals(other.imageBytes)) return false
+        if (imageUrl != other.imageUrl) return false
         if (rentalEndDate != other.rentalEndDate) return false
 
         return true
@@ -42,6 +44,7 @@ data class BookEntity(
         result = 31 * result + title.hashCode()
         result = 31 * result + description.hashCode()
         result = 31 * result + imageBytes.contentHashCode()
+        result = 31 * result + imageUrl.hashCode()
         result = 31 * result + rentalEndDate.hashCode()
         return result
     }

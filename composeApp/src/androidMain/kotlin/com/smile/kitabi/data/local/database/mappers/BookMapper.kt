@@ -13,6 +13,7 @@ fun BookEntity.toDomainModel(): Book {
         title = title,
         description = description,
         imageBytes = imageBytes,
+        imageUrl = imageUrl,
         rentalEndDate = rentalEndDate
     )
 }
@@ -23,6 +24,7 @@ fun Book.toEntity(): BookEntity {
         title = title,
         description = description,
         imageBytes = imageBytes,
+        imageUrl = imageUrl,
         rentalEndDate = rentalEndDate
     )
 }
