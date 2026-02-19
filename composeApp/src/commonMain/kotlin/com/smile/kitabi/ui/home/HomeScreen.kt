@@ -38,6 +38,7 @@ import com.smile.kitabi.domain.usecase.GetRentedBooksUseCase
 import com.smile.kitabi.ui.components.BookItem
 import kotlinx.coroutines.flow.collectLatest
 import androidx.compose.ui.tooling.preview.Preview
+import com.smile.kitabi.domain.model.Book
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -45,7 +46,8 @@ fun HomeScreen(
     viewModel: HomeViewModel,
     refreshTrigger: Int = 0,
     onScanIsbnClick: () -> Unit = {},
-    onAddManuallyClick: () -> Unit = {}
+    onAddManuallyClick: () -> Unit = {},
+    onBookClick: (Book) -> Unit = {}
 ) {
     val state by viewModel.state.collectAsState()
     val snackbarHostState = remember { SnackbarHostState() }
@@ -134,7 +136,7 @@ fun HomeScreen(
                     .padding(innerPadding)
             ) {
                 items(state.books) { book ->
-                    BookItem(book)
+                    BookItem(book, onBookClick = { onBookClick(book) })
                 }
             }
         }

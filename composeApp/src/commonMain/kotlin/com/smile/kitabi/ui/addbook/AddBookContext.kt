@@ -14,7 +14,8 @@ data class AddBookState(
     val titleError: String? = null,
     val dateError: String? = null,
     val isSaved: Boolean = false,
-    val showDatePicker: Boolean = false
+    val showDatePicker: Boolean = false,
+    val editingBookId: String? = null // Track if editing an existing book (ID)
 ) {
     override fun equals(other: Any?): Boolean {
         if (this === other) return true
@@ -33,6 +34,7 @@ data class AddBookState(
         if (dateError != other.dateError) return false
         if (isSaved != other.isSaved) return false
         if (showDatePicker != other.showDatePicker) return false
+        if (editingBookId != other.editingBookId) return false
 
         return true
     }
@@ -49,6 +51,7 @@ data class AddBookState(
         result = 31 * result + (dateError?.hashCode() ?: 0)
         result = 31 * result + isSaved.hashCode()
         result = 31 * result + showDatePicker.hashCode()
+        result = 31 * result + (editingBookId?.hashCode() ?: 0)
         return result
     }
 }

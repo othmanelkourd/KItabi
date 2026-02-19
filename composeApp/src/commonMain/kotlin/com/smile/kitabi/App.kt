@@ -6,6 +6,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import com.smile.kitabi.domain.model.Book
 import com.smile.kitabi.domain.model.GoogleBookInfo
 import com.smile.kitabi.ui.addbook.AddBookScreen
 import com.smile.kitabi.ui.addbook.AddBookViewModel
@@ -28,6 +29,7 @@ fun App(
     var currentScreen by remember { mutableStateOf(Screen.Home) }
     var refreshTrigger by remember { mutableStateOf(0) }
     var scannedBookInfo by remember { mutableStateOf<GoogleBookInfo?>(null) }
+    var selectedBook by remember { mutableStateOf<Book?>(null) }
 
     MaterialTheme {
         when (currentScreen) {
@@ -36,7 +38,11 @@ fun App(
                     viewModel = viewModel,
                     refreshTrigger = refreshTrigger,
                     onScanIsbnClick = { currentScreen = Screen.ScanIsbn },
-                    onAddManuallyClick = { currentScreen = Screen.AddBook }
+                    onAddManuallyClick = { currentScreen = Screen.AddBook },
+                    onBookClick = { book ->
+                        selectedBook = book
+                        currentScreen = Screen.AddBook
+                    }
                 )
             }
 
@@ -47,6 +53,10 @@ fun App(
                 if (scannedBookInfo != null) {
                     addBookViewModel.prefillFromGoogleBook(scannedBookInfo!!)
                     scannedBookInfo = null // Clear after using
+                } else if (selectedBook != null) {
+                    // Prefill with selected book from list
+                    addBookViewModel.prefillFromBook(selectedBook!!)
+                    selectedBook = null // Clear after using
                 }
 
                 AddBookScreen(

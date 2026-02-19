@@ -20,6 +20,10 @@ class RoomBooksRepository(
         localDataSource.saveBook(book)
     }
 
+    override suspend fun updateBook(book: Book) {
+        localDataSource.updateBook(book)
+    }
+
     /**
      * Additional methods for Room-specific functionality
      */
@@ -33,9 +37,6 @@ class RoomBooksRepository(
         return localDataSource.getBookByIsbn(isbn)
     }
 
-    suspend fun updateBook(book: Book) {
-        localDataSource.updateBook(book)
-    }
 
     suspend fun deleteBook(book: Book) {
         localDataSource.deleteBook(book)

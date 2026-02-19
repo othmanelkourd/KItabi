@@ -31,13 +31,18 @@ import com.smile.kitabi.domain.model.Book
 import io.kamel.image.KamelImage
 import io.kamel.image.asyncPainterResource
 import com.smile.kitabi.domain.model.remainingDays
+import androidx.compose.foundation.clickable
 
 @Composable
-fun BookItem(book: Book) {
+fun BookItem(
+    book: Book,
+    onBookClick: () -> Unit = {}
+) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(8.dp),
+            .padding(8.dp)
+            .clickable { onBookClick() },
         elevation = CardDefaults.cardElevation(4.dp)
     ) {
         Row(modifier = Modifier.padding(12.dp)) {

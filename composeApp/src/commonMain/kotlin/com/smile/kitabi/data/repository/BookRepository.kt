@@ -37,4 +37,15 @@ class FakeBooksRepository : BookRepository {
     override suspend fun saveBook(book: Book) {
         books.add(book)
     }
+
+    override suspend fun updateBook(book: Book) {
+        // Find and replace the book with the same ISBN
+        val index = books.indexOfFirst { it.id == book.id }
+        if (index != -1) {
+            books[index] = book
+        } else {
+            // If not found, add it as new
+            books.add(book)
+        }
+    }
 }

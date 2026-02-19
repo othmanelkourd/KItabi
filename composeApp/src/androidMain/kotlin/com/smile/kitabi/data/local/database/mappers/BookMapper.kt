@@ -2,6 +2,8 @@ package com.smile.kitabi.data.local.database.mappers
 
 import com.smile.kitabi.data.local.database.entity.BookEntity
 import com.smile.kitabi.domain.model.Book
+import kotlin.uuid.ExperimentalUuidApi
+import kotlin.uuid.Uuid
 
 /**
  * Mappers between BookEntity (Room) and Book (Domain model)
@@ -9,7 +11,7 @@ import com.smile.kitabi.domain.model.Book
 
 fun BookEntity.toDomainModel(): Book {
     return Book(
-        id = isbn,
+        id = id,
         title = title,
         description = description,
         imageBytes = imageBytes,
@@ -18,9 +20,11 @@ fun BookEntity.toDomainModel(): Book {
     )
 }
 
+@OptIn(ExperimentalUuidApi::class)
 fun Book.toEntity(): BookEntity {
     return BookEntity(
-        isbn = id,
+        id = if (id.isEmpty()) Uuid.random().toString() else id,
+        isbn = "", // ISBN is optional for manually added books
         title = title,
         description = description,
         imageBytes = imageBytes,

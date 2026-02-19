@@ -40,15 +40,21 @@ interface BookDao {
     suspend fun deleteBook(book: BookEntity)
 
     /**
-     * Delete a book by ISBN
+     * Delete a book by ID
      */
-    @Query("DELETE FROM books WHERE isbn = :isbn")
-    suspend fun deleteBookByIsbn(isbn: String)
+    @Query("DELETE FROM books WHERE id = :bookId")
+    suspend fun deleteBookById(bookId: String)
+
+    /**
+     * Get a book by ID
+     */
+    @Query("SELECT * FROM books WHERE id = :bookId")
+    suspend fun getBookById(bookId: String): BookEntity?
 
     /**
      * Get a book by ISBN
      */
-    @Query("SELECT * FROM books WHERE isbn = :isbn")
+    @Query("SELECT * FROM books WHERE isbn = :isbn LIMIT 1")
     suspend fun getBookByIsbn(isbn: String): BookEntity?
 
     /**

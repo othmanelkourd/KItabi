@@ -15,16 +15,23 @@ class SaveBookUseCase(
         description: String,
         imageBytes: ByteArray,
         imageUrl: String = "",
-        rentalEndDate: LocalDate
+        rentalEndDate: LocalDate,
+        bookId: String? = null // Use bookId for updates, null for new books
     ): Result<Unit> = runCatching {
         val book = Book(
-            id = Uuid.random().toString(),
+            id = bookId ?: Uuid.random().toString(), // Generate new ID if not provided
             title = title,
             description = description,
             imageBytes = imageBytes,
             imageUrl = imageUrl,
             rentalEndDate = rentalEndDate
         )
-        repository.saveBook(book)
+
+        // If bookId is provided, update the book; otherwise save as new
+        if (bookId != null) {
+            repository.updateBook(book)
+        } else {
+            repository.saveBook(book)
+        }
     }
 }

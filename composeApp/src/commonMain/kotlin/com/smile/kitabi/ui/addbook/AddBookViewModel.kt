@@ -31,7 +31,20 @@ class AddBookViewModel(
             it.copy(
                 title = bookInfo.title,
                 description = bookInfo.description,
-                imageUrl = bookInfo.thumbnailUrl
+                imageUrl = bookInfo.thumbnailUrl,
+            )
+        }
+    }
+
+    fun prefillFromBook(book: com.smile.kitabi.domain.model.Book) {
+        _state.update {
+            it.copy(
+                title = book.title,
+                description = book.description,
+                imageBytes = book.imageBytes,
+                imageUrl = book.imageUrl,
+                rentalEndDate = book.rentalEndDate,
+                editingBookId = book.id // Store the ID to identify this is an edit
             )
         }
     }
@@ -85,7 +98,8 @@ class AddBookViewModel(
                 description = currentState.description,
                 imageBytes = currentState.imageBytes,
                 imageUrl = currentState.imageUrl,
-                rentalEndDate = currentState.rentalEndDate!!
+                rentalEndDate = currentState.rentalEndDate!!,
+                bookId = currentState.editingBookId // Pass bookId for updating existing books
             ).onSuccess {
                 _state.update { it.copy(isLoading = false, isSaved = true) }
                 _events.tryEmit(AddBookUiEvent.NavigateBack)

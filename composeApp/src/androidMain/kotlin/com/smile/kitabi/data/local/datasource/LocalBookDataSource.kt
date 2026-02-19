@@ -40,6 +40,12 @@ class LocalBookDataSource(
         return bookDao.getRentedBooks().toDomainModels()
     }
 
+    /**
+     * Get a book by ID
+     */
+    suspend fun getBookById(bookId: String): Book? {
+        return bookDao.getBookById(bookId)?.toDomainModel()
+    }
 
     /**
      * Get a book by ISBN
@@ -81,10 +87,10 @@ class LocalBookDataSource(
     }
 
     /**
-     * Delete a book by ISBN
+     * Delete a book by ID
      */
-    suspend fun deleteBookByIsbn(isbn: String) {
-        bookDao.deleteBookByIsbn(isbn)
+    suspend fun deleteBookById(bookId: String) {
+        bookDao.deleteBookById(bookId)
     }
 
     /**

@@ -10,7 +10,8 @@ import kotlinx.datetime.LocalDate
 @Entity(tableName = "books")
 data class BookEntity(
     @PrimaryKey
-    val isbn: String,
+    val id: String, // Random ID as primary key, allows books without ISBN
+    val isbn: String = "", // Optional ISBN
     val title: String,
     val description: String = "",
     val imageBytes: ByteArray = byteArrayOf(),
@@ -29,6 +30,7 @@ data class BookEntity(
 
         other as BookEntity
 
+        if (id != other.id) return false
         if (isbn != other.isbn) return false
         if (title != other.title) return false
         if (description != other.description) return false
@@ -40,7 +42,8 @@ data class BookEntity(
     }
 
     override fun hashCode(): Int {
-        var result = isbn.hashCode()
+        var result = id.hashCode()
+        result = 31 * result + isbn.hashCode()
         result = 31 * result + title.hashCode()
         result = 31 * result + description.hashCode()
         result = 31 * result + imageBytes.contentHashCode()
